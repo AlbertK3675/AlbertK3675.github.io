@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文讲解了 .git 文件夹部分内容的作用。本文不涉及 object 模型。我们会在另一篇文章再做分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git Directory">
+<meta property="og:url" content="http://example.com/2020/09/25/git-Directory/">
+<meta property="og:site_name" content="Just4Fun">
+<meta property="og:description" content="本文讲解了 .git 文件夹部分内容的作用。本文不涉及 object 模型。我们会在另一篇文章再做分析。">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2020/09/25/git-Directory/git-directory.png">
+<meta property="article:published_time" content="2020-09-25T12:54:29.000Z">
+<meta property="article:modified_time" content="2020-09-26T06:58:07.429Z">
+<meta property="article:author" content="Hex">
+<meta property="article:tag" content="git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/09/25/git-Directory/git-directory.png">
+
+<link rel="canonical" href="http://example.com/2020/09/25/git-Directory/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>git Directory | Just4Fun</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Just4Fun</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/09/25/git-Directory/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/56632668?s=400&u=bf01ce94bbb8e234a9f8e66e3f025c2690b7505e&v=4">
+      <meta itemprop="name" content="Hex">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Just4Fun">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          git Directory
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-09-25 20:54:29" itemprop="dateCreated datePublished" datetime="2020-09-25T20:54:29+08:00">2020-09-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-09-26 14:58:07" itemprop="dateModified" datetime="2020-09-26T14:58:07+08:00">2020-09-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/git/" itemprop="url" rel="index"><span itemprop="name">git</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文讲解了 <code>.git</code> 文件夹部分内容的作用。<br>本文不涉及 object 模型。我们会在另一篇文章再做分析。</p>
+<a id="more"></a>
+
+<p><img src="git-directory.png"></p>
+<style>
+table th,td:nth-of-type(3) {
+    width: 50%;
+}
+table th,td:nth-of-type(4) {
+    width: 10%;
+    word-break: break-all 
+}
+</style>
+<table>
+<thead>
+<tr>
+<th>File/directory</th>
+<th>Type</th>
+<th>Meaning</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>config</td>
+<td>text file</td>
+<td>The configuration file for the local git repository</td>
+<td>[See diagram]</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>text file</td>
+<td>Lists a file to read that is the current HEAD branch: git branch will show the branch that HEAD refers to as the current branch.</td>
+<td>ref: refs/heads/master</td>
+</tr>
+<tr>
+<td>refs</td>
+<td>directory</td>
+<td>Everything under the refs directory is references to a commit for a branch of some type (either a local branch or a remote tracking branch).</td>
+<td>-</td>
+</tr>
+<tr>
+<td>refs/heads</td>
+<td>directory</td>
+<td>Files in the refs/heads directory are branch names. For example a file named refs/heads/master means a branch named master exists in the local repository. The contents of the file is the hash of the most recent commit on that branch.</td>
+<td>-</td>
+</tr>
+<tr>
+<td>refs/heads/master</td>
+<td>text file</td>
+<td>The most recent commit on this branch (master)</td>
+<td>6975b25be537f997c92490c7927cb6886fd5c49f</td>
+</tr>
+<tr>
+<td>refs/heads/v1</td>
+<td>text file</td>
+<td>The most recent commit on this branch (v1)</td>
+<td>fd70e1d85320d12f230d8ff5e6056d86a775a6f3</td>
+</tr>
+<tr>
+<td>refs/remotes</td>
+<td>directory</td>
+<td>Everything under the refs/remotes directory is references to a commit for a remote-tracking branch.</td>
+<td>–</td>
+</tr>
+<tr>
+<td>refs/remotes/origin</td>
+<td>directory</td>
+<td>The remote tracking branches for the remote repository origin are stored in this directory.</td>
+<td>–</td>
+</tr>
+<tr>
+<td>refs/remotes/origin/v0</td>
+<td>text file</td>
+<td>The most recent commit on this branch. Note the hash is the different than the hash in in refs/heads/v1 which means the user’s local v1 branch is behind the commit in the remote-tracking branch’s v1 branch. The user needs to merge the commits from this remote-tracking branch into the user’s v1 branch to catch up to the remote-tracking branch.</td>
+<td>e018ab5fe997a56bffb39350543c017684cfd721</td>
+</tr>
+</tbody></table>
+<p>上表摘自 <a target="_blank" rel="noopener" href="https://gitguys.com/topics/the-git-directory">原文链接</a></p>
+<p>另外补充一些</p>
+<p>tree .git</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">├── HEAD</span><br><span class="line">├── config</span><br><span class="line">├── description</span><br><span class="line">├── hooks</span><br><span class="line">│    ├── pre-commit.sample</span><br><span class="line">│    ├── pre-push.sample</span><br><span class="line">│    └── ...</span><br><span class="line">├── index</span><br><span class="line">├── info</span><br><span class="line">│    └── exclude</span><br><span class="line">├── logs</span><br><span class="line">│    ├── HEAD</span><br><span class="line">│    └── refs</span><br><span class="line">│         ├── stash</span><br><span class="line">│         ├── heads</span><br><span class="line">│         └── remotes</span><br><span class="line">├── objects</span><br><span class="line">│    ├── info</span><br><span class="line">│    └── pack</span><br><span class="line">└── refs</span><br><span class="line">     ├── heads</span><br><span class="line">     └── tags</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>File/directory</th>
+<th>Type</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>object/info</td>
+<td>文件夹</td>
+<td>记录了关于对象存储的附加信息</td>
+</tr>
+<tr>
+<td>index</td>
+<td>文件</td>
+<td>保存暂存区（stage）信息</td>
+</tr>
+<tr>
+<td>description</td>
+<td>文件</td>
+<td>仓库的描述信息</td>
+</tr>
+<tr>
+<td>hooks</td>
+<td>文件夹</td>
+<td>存放一些 shell 脚本特定时间触发</td>
+</tr>
+<tr>
+<td>info</td>
+<td>文件夹</td>
+<td>包含一些仓库信息</td>
+</tr>
+<tr>
+<td>logs</td>
+<td>文件夹</td>
+<td>保存所有引用更改记录</td>
+</tr>
+<tr>
+<td>logs/HEAD</td>
+<td>文件</td>
+<td>即 git reflog 结果</td>
+</tr>
+<tr>
+<td>logs/refs/stash</td>
+<td>文件</td>
+<td>存储 git stash 暂存的记录</td>
+</tr>
+<tr>
+<td>logs/refs/heads</td>
+<td>文件夹</td>
+<td>存储本地分支记录</td>
+</tr>
+<tr>
+<td>logs/refs/remotes</td>
+<td>文件夹</td>
+<td>存储远程分支记录</td>
+</tr>
+<tr>
+<td>refs</td>
+<td>文件夹</td>
+<td>上面已经提到，是当前的各种引用</td>
+</tr>
+<tr>
+<td>COMMIT_EDITMSG</td>
+<td>文件</td>
+<td>最近一次提交的描述信息</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/git/" rel="tag"># git</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/24/git-submodule/" rel="prev" title="git submodule">
+      <i class="fa fa-chevron-left"></i> git submodule
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/26/Git-Objects/" rel="next" title="Git Objects">
+      Git Objects <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hex"
+      src="https://avatars3.githubusercontent.com/u/56632668?s=400&u=bf01ce94bbb8e234a9f8e66e3f025c2690b7505e&v=4">
+  <p class="site-author-name" itemprop="name">Hex</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-cog fa-spin"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hex</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
